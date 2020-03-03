@@ -1,9 +1,9 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-class ModelC_Base(nn.Module):
+class ModelC_BaseNet(nn.Module):
     def __init__(self, input_size, n_classes=10, **kwargs):
-        super(AllConvNet, self).__init__()
+        super(ModelC_BaseNet, self).__init__()
         self.conv1 = nn.Conv2d(input_size, 96, 3, padding=1)
         self.conv2 = nn.Conv2d(96, 96, 3, padding=1)
         #self.conv3 = nn.Conv2d(96, 96, 3, padding=1, stride=2) #pooling layer
@@ -37,9 +37,9 @@ class ModelC_Base(nn.Module):
         pool_out.squeeze_(-1)
         return pool_out
 
-class ModelC_AllConv(nn.Module):
+class ModelC_AllConvNet(nn.Module):
     def __init__(self, input_size, n_classes=10, **kwargs):
-        super(AllConvNet, self).__init__()
+        super(ModelC_AllConvNet, self).__init__()
         self.conv1 = nn.Conv2d(input_size, 96, 3, padding=1)
         self.conv2 = nn.Conv2d(96, 96, 3, padding=1)
         self.conv3 = nn.Conv2d(96, 96, 3, padding=1, stride=2)
