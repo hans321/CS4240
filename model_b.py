@@ -23,6 +23,8 @@ class ModelB(nn.Module):
 
         self.class_conv = nn.Conv2d(192, n_classes, 1)              # 1x1 conv. 10 ReLU
 
+        print("Loaded model B")
+
     def forward(self, x):
         x_drop = F.dropout(x, .2)                           # Dropout is 20% for all inputs (see end of p. 5)
 
@@ -66,6 +68,8 @@ class Strided_CNN_B(nn.Module):
         self.conv6 = nn.Conv2d(192, 192, 1)                         # 1x1 conv. 192 ReLU
 
         self.class_conv = nn.Conv2d(192, n_classes, 1)              # 1x1 conv. 10 ReLU
+
+        print("Loaded Strided-CNN-B")
 
     def forward(self, x):
         x_drop = F.dropout(x, .2)                           # Dropout is 20% for all inputs (see end of p. 5)
@@ -113,6 +117,8 @@ class ConvPool_CNN_B(nn.Module):
 
         self.class_conv = nn.Conv2d(192, n_classes, 1)              # 1x1 conv. 10 ReLU
 
+        print("Loaded ConvPool-CNN-B")
+
     def forward(self, x):
         x_drop = F.dropout(x, .2)                           # Dropout is 20% for all inputs (see end of p. 5)
 
@@ -159,6 +165,8 @@ class All_CNN_B(nn.Module):
         self.conv7 = nn.Conv2d(192, 192, 3, padding=1)              # 3x3 conv. 192 ReLU
         self.conv8 = nn.Conv2d(192, 192, 1)                         # 1x1 conv. 192 ReLU
         self.class_conv = nn.Conv2d(192, n_classes, 1)              # 1x1 conv. 10 ReLU
+
+        print("All-CNN-B")
 
     def forward(self, x):
         x_drop = F.dropout(x, .2)                           # Dropout is 20% for all inputs (see end of p. 5)
