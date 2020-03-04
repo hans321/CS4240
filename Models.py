@@ -88,13 +88,13 @@ class ModelB(nn.Module):
         
         self.max1 = nn.MaxPool2d(3, padding=1, stride=2)            # 3x3 max-pooling stride 2
         
-        self.conv4 = nn.Conv2d(96, 192, 5, padding=2)               # 5x5 conv. 192 ReLU
-        self.conv5 = nn.Conv2d(192, 192, 1)                         # 1x1 conv. 192 ReLU 
+        self.conv3 = nn.Conv2d(96, 192, 5, padding=2)               # 5x5 conv. 192 ReLU
+        self.conv4 = nn.Conv2d(192, 192, 1)                         # 1x1 conv. 192 ReLU 
 
         self.max2 = nn.MaxPool2d(3, padding=1, stride=2)            # 3x3 max-pooling stride 2
         
-        self.conv7 = nn.Conv2d(192, 192, 3, padding=1)              # 3x3 conv. 192 ReLU
-        self.conv8 = nn.Conv2d(192, 192, 1)                         # 1x1 conv. 192 ReLU
+        self.conv5 = nn.Conv2d(192, 192, 3, padding=1)              # 3x3 conv. 192 ReLU
+        self.conv6 = nn.Conv2d(192, 192, 1)                         # 1x1 conv. 192 ReLU
 
         self.class_conv = nn.Conv2d(192, n_classes, 1)              # 1x1 conv. 10 ReLU
 
@@ -106,18 +106,18 @@ class ModelB(nn.Module):
         conv1_out = F.relu(self.conv1(x_drop))              # 5x5 conv. 96 ReLU             
         conv2_out = F.relu(self.conv2(conv1_out))           # 1x1 conv. 96 ReLU
         
-        max1_out = F.relu(self.max1(conv2_out))             # 3x3 max-pooling stride 2
-        conv3_out_drop = F.dropout(max1_out, .5)            # Dropout is 50% for all other than inputs (see end of p. 5)
+        max1_out = self.max1(conv2_out)                     # 3x3 max-pooling stride 2
+        max1_out_drop = F.dropout(max1_out, .5)             # Dropout is 50% for all other than inputs (see end of p. 5)
 
-        conv4_out = F.relu(self.conv4(conv3_out_drop))      # 5x5 conv. 192 ReLU
-        conv5_out = F.relu(self.conv5(conv4_out))           # 1x1 conv. 192 ReLU
+        conv3_out = F.relu(self.conv3(max1_out_drop))       # 5x5 conv. 192 ReLU
+        conv4_out = F.relu(self.conv4(conv3_out))           # 1x1 conv. 192 ReLU
         
-        max2 = F.relu(self.conv6(conv5_out))                # 3x3 max-pooling stride 2
-        conv6_out_drop = F.dropout(max2, .5)                # Dropout is 50% for all other than inputs (see end of p. 5)
+        max2_out = self.max(conv4_out)                      # 3x3 max-pooling stride 2
+        max2_out_drop = F.dropout(max2_out, .5)             # Dropout is 50% for all other than inputs (see end of p. 5)
         
-        conv7_out = F.relu(self.conv7(conv6_out_drop))      # 3x3 conv. 192 ReLU
-        conv8_out = F.relu(self.conv8(conv7_out))           # 1x1 conv. 192 ReLU
-        class_out = F.relu(self.class_conv(conv8_out))      # 1x1 conv. 10 ReLU
+        conv5_out = F.relu(self.conv5(max2_out_drop))       # 3x3 conv. 192 ReLU
+        conv6_out = F.relu(self.conv6(conv5_out))           # 1x1 conv. 192 ReLU
+        class_out = F.relu(self.class_conv(conv6_out))      # 1x1 conv. 10 ReLU
 
         pool_out = F.adaptive_avg_pool2d(class_out, 1)      # Global averaging pooling with output size of 1
         
