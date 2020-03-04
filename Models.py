@@ -131,7 +131,7 @@ class Strided_CNN_B(nn.Module):
     """
     
     def __init__(self, input_size, n_classes=10, **kwargs):
-        super(ModelB, self).__init__()
+        super(Strided_CNN_B, self).__init__()
         
         self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2)        # 5x5 conv. 96 ReLU
         self.conv2 = nn.Conv2d(96, 96, 1, stride=2)                 # 1x1 conv. 96 ReLU
@@ -172,7 +172,7 @@ class ConvPool_CNN_B(nn.Module):
     """
 
     def __init__(self, input_size, n_classes=10, **kwargs):
-        super(ModelB, self).__init__()
+        super(ConvPool_CNN_B, self).__init__()
         
         self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2)        # 5x5 conv. 96 ReLU
         self.conv2 = nn.Conv2d(96, 96, 1)                           # 1x1 conv. 96 ReLU
@@ -225,7 +225,7 @@ class All_CNN_B(nn.Module):
     """ Max-pooling is replaced by a conv. layer.
     """
     def __init__(self, input_size, n_classes=10, **kwargs):
-        super(ModelB, self).__init__()
+        super(All_CNN_B, self).__init__()
         
         self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2)        # 5x5 conv. 96 ReLU
         self.conv2 = nn.Conv2d(96, 96, 1)                           # 1x1 conv. 96 ReLU
