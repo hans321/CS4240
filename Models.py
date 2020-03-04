@@ -112,7 +112,7 @@ class ModelB(nn.Module):
         conv3_out = F.relu(self.conv3(max1_out_drop))       # 5x5 conv. 192 ReLU
         conv4_out = F.relu(self.conv4(conv3_out))           # 1x1 conv. 192 ReLU
         
-        max2_out = self.max(conv4_out)                      # 3x3 max-pooling stride 2
+        max2_out = self.max2(conv4_out)                      # 3x3 max-pooling stride 2
         max2_out_drop = F.dropout(max2_out, .5)             # Dropout is 50% for all other than inputs (see end of p. 5)
         
         conv5_out = F.relu(self.conv5(max2_out_drop))       # 3x3 conv. 192 ReLU
