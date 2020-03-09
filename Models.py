@@ -270,186 +270,186 @@ class All_CNN_B(nn.Module):
     
 class Model_A(nn.Module):
     def __init__(self, input_size, n_classes=10, **kwargs):
-        super(AllConvNet, self).__init__()							# Input 32 x 32 RGB image
-
-        self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2)		# 5 x 5 conv. 96 ReLU
-
-        #self.conv2 = nn.Conv2d(96, 96, 3, padding=1, stride=2)		# 3 x 3 max-pooling stride 2
-
-        self.conv3 = nn.Conv2d(96, 192, 5, padding=2)				# 5 x 5 conv. 192 ReLU
-
-        #self.conv4 = nn.Conv2d(192, 192, 3, padding=1, stride=2)	# 3 x 3 max-pooling stride 2
+        super(Model_A, self).__init__()                             # Input 32 x 32 RGB image
         
-		self.conv5 = nn.Conv2d(192, 192, 3, padding=1)				# 3 x 3 conv. 192 ReLU
+        self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2)        # 5 x 5 conv. 96 ReLU
         
-		self.conv6 = nn.Conv2d(192, 192, 1)							# 1 x 1 conv. 192 ReLU
-
-        self.class_conv = nn.Conv2d(192, n_classes, 1)				# 1 x 1 conv. 10 ReLU
-
-																	# global averaging over 6 x 6 spatial dimensions
-
-		print("Loaded A-Base")
+        #self.conv2 = nn.Conv2d(96, 96, 3, padding=1, stride=2)     # 3 x 3 max-pooling stride 2
+        
+        self.conv3 = nn.Conv2d(96, 192, 5, padding=2)               # 5 x 5 conv. 192 ReLU
+        
+        #self.conv4 = nn.Conv2d(192, 192, 3, padding=1, stride=2)   # 3 x 3 max-pooling stride 2
+        
+        self.conv5 = nn.Conv2d(192, 192, 3, padding=1)              # 3 x 3 conv. 192 ReLU
+        
+        self.conv6 = nn.Conv2d(192, 192, 1)                         # 1 x 1 conv. 192 ReLU
+        
+        self.class_conv = nn.Conv2d(192, n_classes, 1)              # 1 x 1 conv. 10 ReLU
+        
+                                                                    # global averaging over 6 x 6 spatial dimensions
+        
+        print("Loaded A-Base")
 
     def forward(self, x):
-        x_drop = F.dropout(x, .2)									# Input 32 x 32 RGB image
+        x_drop = F.dropout(x, .2)                           # Input 32 x 32 RGB image
         
-		conv1_out = F.relu(self.conv1(x_drop))						# 5 x 5 conv. 96 ReLU
-
-        #conv2_out = F.relu(self.conv2(conv1_out))					# 3 x 3 max-pooling stride 2
-		conv2_out = F.max_pool2d(conv1_out, 3, 2)
+        conv1_out = F.relu(self.conv1(x_drop))              # 5 x 5 conv. 96 ReLU
+        
+        #conv2_out = F.relu(self.conv2(conv1_out))          # 3 x 3 max-pooling stride 2
+        conv2_out = F.max_pool2d(conv1_out, 3, 2)
         conv2_out_drop = F.dropout(conv2_out, .5)
-
-        conv3_out = F.relu(self.conv3(conv2_out_drop))				# 5 x 5 conv. 192 ReLU
-
-        #conv4_out = F.relu(self.conv4(conv3_out))					# 3 x 3 max-pooling stride 2
+        
+        conv3_out = F.relu(self.conv3(conv2_out_drop))      # 5 x 5 conv. 192 ReLU
+        
+        #conv4_out = F.relu(self.conv4(conv3_out))          # 3 x 3 max-pooling stride 2
         conv4_out = F.max_pool2d(conv3_out, 3, 2)
-		conv4_out_drop = F.dropout(conv4_out, .5)
+        conv4_out_drop = F.dropout(conv4_out, .5)
 		
-        conv5_out = F.relu(self.conv5(conv4_out_drop))				# 3 x 3 conv. 192 ReLU
+        conv5_out = F.relu(self.conv5(conv4_out_drop))      # 3 x 3 conv. 192 ReLU
         
-		conv6_out = F.relu(self.conv6(conv5_out))					# 1 x 1 conv. 192 ReLU
+        conv6_out = F.relu(self.conv6(conv5_out))           # 1 x 1 conv. 192 ReLU
 
-        class_out = F.relu(self.class_conv(conv6_out))				# 1 x 1 conv. 10 ReLU
+        class_out = F.relu(self.class_conv(conv6_out))      # 1 x 1 conv. 10 ReLU
         
-		pool_out = F.adaptive_avg_pool2d(class_out, 1)				# global averaging over 6 x 6 spatial dimensions
+        pool_out = F.adaptive_avg_pool2d(class_out, 1)      # global averaging over 6 x 6 spatial dimensions
         
-		pool_out.squeeze_(-1)
+        pool_out.squeeze_(-1)
         pool_out.squeeze_(-1)
         return pool_out
 
 class Model_A_Strided(nn.Module):
     def __init__(self, input_size, n_classes=10, **kwargs):
-        super(AllConvNet, self).__init__()							# Input 32 x 32 RGB image
-
-        self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2, stride=2)	# 5 x 5 conv. 96 ReLU stride 2
-
-        self.conv3 = nn.Conv2d(96, 192, 5, padding=2, stride=2)		# 5 x 5 conv. 192 ReLU stride 2
+        super(Model_A_Strided, self).__init__()                         # Input 32 x 32 RGB image
         
-		self.conv5 = nn.Conv2d(192, 192, 3, padding=1)				# 3 x 3 conv. 192 ReLU
+        self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2, stride=2)  # 5 x 5 conv. 96 ReLU stride 2
         
-		self.conv6 = nn.Conv2d(192, 192, 1)							# 1 x 1 conv. 192 ReLU
+        self.conv3 = nn.Conv2d(96, 192, 5, padding=2, stride=2)         # 5 x 5 conv. 192 ReLU stride 2
+        
+        self.conv5 = nn.Conv2d(192, 192, 3, padding=1)                  # 3 x 3 conv. 192 ReLU
+        
+        self.conv6 = nn.Conv2d(192, 192, 1)                             # 1 x 1 conv. 192 ReLU
+        
+        self.class_conv = nn.Conv2d(192, n_classes, 1)                  # 1 x 1 conv. 10 ReLU
 
-        self.class_conv = nn.Conv2d(192, n_classes, 1)				# 1 x 1 conv. 10 ReLU
+                                                                        # global averaging over 6 x 6 spatial dimensions
 
-																	# global averaging over 6 x 6 spatial dimensions
+        print("Loaded A-Strided")
 
-		print("Loaded A-Strided")
-
-	# Note: no dropout after convolution layers?
+        # Note: no dropout after convolution layers?
     def forward(self, x):
-        x_drop = F.dropout(x, .2)									# Input 32 x 32 RGB image
+        x_drop = F.dropout(x, .2)                               # Input 32 x 32 RGB image
         
-		conv1_out = F.relu(self.conv1(x_drop))						# 5 x 5 conv. 96 ReLU
-
-        conv3_out = F.relu(self.conv3(conv1_out))					# 5 x 5 conv. 192 ReLU
-		
-        conv5_out = F.relu(self.conv5(conv3_out))					# 3 x 3 conv. 192 ReLU
+        conv1_out = F.relu(self.conv1(x_drop))                  # 5 x 5 conv. 96 ReLU
         
-		conv6_out = F.relu(self.conv6(conv5_out))					# 1 x 1 conv. 192 ReLU
-
-        class_out = F.relu(self.class_conv(conv6_out))				# 1 x 1 conv. 10 ReLU
+        conv3_out = F.relu(self.conv3(conv1_out))               # 5 x 5 conv. 192 ReLU
+        	
+        conv5_out = F.relu(self.conv5(conv3_out))               # 3 x 3 conv. 192 ReLU
         
-		pool_out = F.adaptive_avg_pool2d(class_out, 1)				# global averaging over 6 x 6 spatial dimensions
+        conv6_out = F.relu(self.conv6(conv5_out))               # 1 x 1 conv. 192 ReLU
         
-		pool_out.squeeze_(-1)
+        class_out = F.relu(self.class_conv(conv6_out))          # 1 x 1 conv. 10 ReLU
+        
+        pool_out = F.adaptive_avg_pool2d(class_out, 1)          # global averaging over 6 x 6 spatial dimensions
+        
+        pool_out.squeeze_(-1)
         pool_out.squeeze_(-1)
         return pool_out
 
 		
 class Model_A_ConvPool(nn.Module):
     def __init__(self, input_size, n_classes=10, **kwargs):
-        super(AllConvNet, self).__init__()							# Input 32 x 32 RGB image
+        super(Model_A_ConvPool, self).__init__()                # Input 32 x 32 RGB image
 
-        self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2)		# 5 x 5 conv. 96 ReLU
-        self.conv2 = nn.Conv2d(96, 96, 5, padding=2)				# 5 x 5 conv. 96 ReLU
+        self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2)    # 5 x 5 conv. 96 ReLU
+        self.conv2 = nn.Conv2d(96, 96, 5, padding=2)            # 5 x 5 conv. 96 ReLU
 
-																	# 3 x 3 max-pooling stride 2
+                                                                # 3 x 3 max-pooling stride 2
 
-        self.conv3 = nn.Conv2d(96, 192, 5, padding=2)				# 5 x 5 conv. 192 ReLU
-        self.conv4 = nn.Conv2d(96, 192, 5, padding=2)				# 5 x 5 conv. 192 ReLU
+        self.conv3 = nn.Conv2d(96, 192, 5, padding=2)           # 5 x 5 conv. 192 ReLU
+        self.conv4 = nn.Conv2d(192, 192, 5, padding=2)           # 5 x 5 conv. 192 ReLU
 
-																	# 3 x 3 max-pooling stride 2
+                                                                # 3 x 3 max-pooling stride 2
         
-		self.conv5 = nn.Conv2d(192, 192, 3, padding=1)				# 3 x 3 conv. 192 ReLU
+        self.conv5 = nn.Conv2d(192, 192, 3, padding=1)          # 3 x 3 conv. 192 ReLU
         
-		self.conv6 = nn.Conv2d(192, 192, 1)							# 1 x 1 conv. 192 ReLU
+        self.conv6 = nn.Conv2d(192, 192, 1)                     # 1 x 1 conv. 192 ReLU
 
-        self.class_conv = nn.Conv2d(192, n_classes, 1)				# 1 x 1 conv. 10 ReLU
+        self.class_conv = nn.Conv2d(192, n_classes, 1)          # 1 x 1 conv. 10 ReLU
 
-																	# global averaging over 6 x 6 spatial dimensions
+                                                                # global averaging over 6 x 6 spatial dimensions
 
-		print("Loaded A-ConvPool")
+        print("Loaded A-ConvPool")
 
     def forward(self, x):
-        x_drop = F.dropout(x, .2)									# Input 32 x 32 RGB image
+        x_drop = F.dropout(x, .2)                               # Input 32 x 32 RGB image
         
-		conv1_out = F.relu(self.conv1(x_drop))						# 5 x 5 conv. 96 ReLU
-		conv2_out = F.relu(self.conv2(conv1_out))					# 5 x 5 conv. 96 ReLU
+        conv1_out = F.relu(self.conv1(x_drop))                  # 5 x 5 conv. 96 ReLU
+        conv2_out = F.relu(self.conv2(conv1_out))               # 5 x 5 conv. 96 ReLU
 
-		pool1_out = F.max_pool2d(conv2_out, 3, 2)					# 3 x 3 max-pooling stride 2
+        pool1_out = F.max_pool2d(conv2_out, 3, 2)               # 3 x 3 max-pooling stride 2
         pool1_out_drop = F.dropout(pool1_out, .5)
 
-        conv3_out = F.relu(self.conv3(pool1_out_drop))				# 5 x 5 conv. 192 ReLU
-		conv4_out = F.relu(self.conv4(conv3_out))					# 5 x 5 conv. 192 ReLU
+        conv3_out = F.relu(self.conv3(pool1_out_drop))          # 5 x 5 conv. 192 ReLU
+        conv4_out = F.relu(self.conv4(conv3_out))               # 5 x 5 conv. 192 ReLU
 					
-        pool2_out = F.max_pool2d(conv4_out, 3, 2)					# 3 x 3 max-pooling stride 2
+        pool2_out = F.max_pool2d(conv4_out, 3, 2)               # 3 x 3 max-pooling stride 2
         pool2_out_drop = F.dropout(pool2_out, .5)
 
-        conv5_out = F.relu(self.conv5(pool2_out_drop))				# 3 x 3 conv. 192 ReLU
+        conv5_out = F.relu(self.conv5(pool2_out_drop))          # 3 x 3 conv. 192 ReLU
         
-		conv6_out = F.relu(self.conv6(conv5_out))					# 1 x 1 conv. 192 ReLU
+        conv6_out = F.relu(self.conv6(conv5_out))               # 1 x 1 conv. 192 ReLU
 
-        class_out = F.relu(self.class_conv(conv6_out))				# 1 x 1 conv. 10 ReLU
+        class_out = F.relu(self.class_conv(conv6_out))          # 1 x 1 conv. 10 ReLU
         
-		pool_out = F.adaptive_avg_pool2d(class_out, 1)				# global averaging over 6 x 6 spatial dimensions
+        pool_out = F.adaptive_avg_pool2d(class_out, 1)          # global averaging over 6 x 6 spatial dimensions
         
-		pool_out.squeeze_(-1)
+        pool_out.squeeze_(-1)
         pool_out.squeeze_(-1)
         return pool_out
 		
 class Model_A_All(nn.Module):
     def __init__(self, input_size, n_classes=10, **kwargs):
-        super(AllConvNet, self).__init__()							# Input 32 x 32 RGB image
+        super(Model_A_All, self).__init__()                         # Input 32 x 32 RGB image
 
-        self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2)		# 5 x 5 conv. 96 ReLU
+        self.conv1 = nn.Conv2d(input_size, 96, 5, padding=2)        # 5 x 5 conv. 96 ReLU
 
-        self.conv2 = nn.Conv2d(96, 96, 3, padding=1, stride=2)		# 3 x 3 max-pooling stride 2
+        self.conv2 = nn.Conv2d(96, 96, 3, padding=1, stride=2)      # 3 x 3 max-pooling stride 2
 
-        self.conv3 = nn.Conv2d(96, 192, 5, padding=2)				# 5 x 5 conv. 192 ReLU
+        self.conv3 = nn.Conv2d(96, 192, 5, padding=2)               # 5 x 5 conv. 192 ReLU
 
-        self.conv4 = nn.Conv2d(192, 192, 3, padding=1, stride=2)	# 3 x 3 max-pooling stride 2
+        self.conv4 = nn.Conv2d(192, 192, 3, padding=1, stride=2)    # 3 x 3 max-pooling stride 2
         
-		self.conv5 = nn.Conv2d(192, 192, 3, padding=1)				# 3 x 3 conv. 192 ReLU
+        self.conv5 = nn.Conv2d(192, 192, 3, padding=1)              # 3 x 3 conv. 192 ReLU
         
-		self.conv6 = nn.Conv2d(192, 192, 1)							# 1 x 1 conv. 192 ReLU
+        self.conv6 = nn.Conv2d(192, 192, 1)                         # 1 x 1 conv. 192 ReLU
 
-        self.class_conv = nn.Conv2d(192, n_classes, 1)				# 1 x 1 conv. 10 ReLU
+        self.class_conv = nn.Conv2d(192, n_classes, 1)              # 1 x 1 conv. 10 ReLU
 
-																	# global averaging over 6 x 6 spatial dimensions
+                                                                    # global averaging over 6 x 6 spatial dimensions
 
-		print("Loaded A-All")
+        print("Loaded A-All")
 
     def forward(self, x):
-        x_drop = F.dropout(x, .2)									# Input 32 x 32 RGB image
+        x_drop = F.dropout(x, .2)                           # Input 32 x 32 RGB image
         
-		conv1_out = F.relu(self.conv1(x_drop))						# 5 x 5 conv. 96 ReLU
+        conv1_out = F.relu(self.conv1(x_drop))              # 5 x 5 conv. 96 ReLU
 
-        conv2_out = F.relu(self.conv2(conv1_out))					# 3 x 3 max-pooling stride 2
+        conv2_out = F.relu(self.conv2(conv1_out))           # 3 x 3 max-pooling stride 2
         conv2_out_drop = F.dropout(conv2_out, .5)
 
-        conv3_out = F.relu(self.conv3(conv2_out_drop))				# 5 x 5 conv. 192 ReLU
+        conv3_out = F.relu(self.conv3(conv2_out_drop))      # 5 x 5 conv. 192 ReLU
 
-        conv4_out = F.relu(self.conv4(conv3_out))					# 3 x 3 max-pooling stride 2
-		conv4_out_drop = F.dropout(conv4_out, .5)
+        conv4_out = F.relu(self.conv4(conv3_out))           # 3 x 3 max-pooling stride 2
+        conv4_out_drop = F.dropout(conv4_out, .5)
 		
-        conv5_out = F.relu(self.conv5(conv4_out_drop))				# 3 x 3 conv. 192 ReLU
+        conv5_out = F.relu(self.conv5(conv4_out_drop))      # 3 x 3 conv. 192 ReLU
         
-		conv6_out = F.relu(self.conv6(conv5_out))					# 1 x 1 conv. 192 ReLU
+        conv6_out = F.relu(self.conv6(conv5_out))           # 1 x 1 conv. 192 ReLU
 
-        class_out = F.relu(self.class_conv(conv6_out))				# 1 x 1 conv. 10 ReLU
+        class_out = F.relu(self.class_conv(conv6_out))      # 1 x 1 conv. 10 ReLU
         
-		pool_out = F.adaptive_avg_pool2d(class_out, 1)				# global averaging over 6 x 6 spatial dimensions
+        pool_out = F.adaptive_avg_pool2d(class_out, 1)      # global averaging over 6 x 6 spatial dimensions
         
-		pool_out.squeeze_(-1)
+        pool_out.squeeze_(-1)
         pool_out.squeeze_(-1)
         return pool_out
