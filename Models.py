@@ -504,8 +504,6 @@ class ConvPool_CNN_C(nn.Module):
         pool_out.squeeze_(-1)
         return pool_out
 
-<<<<<<< HEAD
-
 #---------------------------------------------------------------------------#
 #                               B MODELS                                    #
 #---------------------------------------------------------------------------#
@@ -702,7 +700,6 @@ class All_CNN_B(nn.Module):
         pool_out.squeeze_(-1)   
         return pool_out
     
-=======
 class Strided_CNN_C(nn.Module):
     def __init__(self, input_size, n_classes=10, **kwargs):
         super(Strided_CNN_C, self).__init__()
