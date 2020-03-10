@@ -738,4 +738,3 @@ class Strided_CNN_C(nn.Module):
         pool_out.squeeze_(-1)
         pool_out.squeeze_(-1)
         return pool_out
->>>>>>> 66b04cb864860632f8ba95daaa87b9aaaad29287
