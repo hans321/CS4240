@@ -45,3 +45,43 @@ class ZCA(BaseEstimator, TransformerMixin):
         X_transformed = X - self.mean_
         X_transformed = np.dot(X_transformed, self.components_.T)
         return X_transformed
+		
+# ZCA and MeanOnlyBNLayer implementations copied from
+#   https://github.com/TimSalimans/weight_norm/blob/master/nn.py
+#
+# Modifications made to MeanOnlyBNLayer:
+# - Added configurable momentum.
+# - Added 'modify_incoming' flag for weight matrix sharing (not used in this project).
+# - Sums and means use float32 datatype.		
+		
+class ZCATransformation(object):
+    def __init__(self, transformation_matrix, transformation_mean):
+        if transformation_matrix.size(0) != transformation_matrix.size(1):
+            raise ValueError("transformation_matrix should be square. Got " +
+                             "[{} x {}] rectangular matrix.".format(*transformation_matrix.size()))
+        self.transformation_matrix = transformation_matrix
+        self.transformation_mean = transformation_mean
+
+    def __call__(self, tensor):
+        """
+        Args:
+            tensor (Tensor): Tensor image of size (N, C, H, W) to be whitened.
+        Returns:
+            Tensor: Transformed image.
+        """
+        if tensor.size(1) * tensor.size(2) * tensor.size(3) != self.transformation_matrix.size(0):
+            raise ValueError("tensor and transformation matrix have incompatible shape." +
+                             "[{} x {} x {}] != ".format(*tensor[0].size()) +
+                             "{}".format(self.transformation_matrix.size(0)))
+        batch = tensor.size(0)
+
+        flat_tensor = tensor.view(batch, -1)
+        transformed_tensor = torch.mm(flat_tensor - self.transformation_mean, self.transformation_matrix)
+
+        tensor = transformed_tensor.view(tensor.size())
+        return tensor
+
+    def __repr__(self):
+        format_string = self.__class__.__name__ + '('
+        format_string += (str(self.transformation_matrix.numpy().tolist()) + ')')
+        return format_string
