@@ -391,37 +391,33 @@ class All_CNN_B(nn.Module):
 class Model_C(nn.Module):
     def __init__(self, input_size, n_classes=10, **kwargs):
         super(Model_C, self).__init__()
-        self.conv1 = nn.Conv2d(input_size, 96, 3, padding=1)
+        self.conv1 = nn.Conv2d(input_size, 96, 3, padding=1)        
         self.conv2 = nn.Conv2d(96, 96, 3, padding=1)
-        #self.conv3 = nn.Conv2d(96, 96, 3, padding=1, stride=2) #pooling layer
-        self.pool3 = nn.MaxPool2d(3, stride=2)
+        self.pool1 = nn.MaxPool2d(3, stride=2)
         self.conv4 = nn.Conv2d(96, 192, 3, padding=1)
         self.conv5 = nn.Conv2d(192, 192, 3, padding=1)
-        #self.conv6 = nn.Conv2d(192, 192, 3, padding=1, stride=2) #pooling layer
-        self.pool6 = nn.MaxPool2d(3, stride=2)
+        self.pool2 = nn.MaxPool2d(3, stride=2)
         self.conv7 = nn.Conv2d(192, 192, 3, padding=1)
         self.conv8 = nn.Conv2d(192, 192, 1)
-
         self.class_conv = nn.Conv2d(192, n_classes, 1)
 
         print("Loaded Model C")
 
 
     def forward(self, x):
-        x_drop = F.dropout(x, .2)
-        conv1_out = F.relu(self.conv1(x_drop))
-        conv2_out = F.relu(self.conv2(conv1_out))
-        pool3_out = F.relu(self.pool3(conv2_out))
-        pool3_out_drop = F.dropout(pool3_out, .5)
-        conv4_out = F.relu(self.conv4(pool3_out_drop))
-        conv5_out = F.relu(self.conv5(conv4_out))
-        pool6_out = F.relu(self.pool6(conv5_out))
-        pool6_out_drop = F.dropout(pool6_out, .5)
-        conv7_out = F.relu(self.conv7(pool6_out_drop))
-        conv8_out = F.relu(self.conv8(conv7_out))
-
-        class_out = F.relu(self.class_conv(conv8_out))
-        pool_out = F.adaptive_avg_pool2d(class_out, 1)
+        x_drop = F.dropout(x, .2)                       # Dropout is 20% for all inputs (see end of p. 5)
+        conv1_out = F.relu(self.conv1(x_drop))          # 3x3 conv. 96 ReLU
+        conv2_out = F.relu(self.conv2(conv1_out))       # 3x3 conv. 96 ReLU
+        pool1_out = F.relu(self.pool1(conv2_out))       # 3x3 max-pooling stride 2
+        pool1_out_drop = F.dropout(pool1_out, .5)       # Dropout 50% after every max-pooling layer
+        conv4_out = F.relu(self.conv4(pool1_out_drop))  # 3x3 conv. 192 ReLU
+        conv5_out = F.relu(self.conv5(conv4_out))       # 3x3 conv. 192 ReLU
+        pool2_out = F.relu(self.pool2(conv5_out))       # 3x3 max-pooling stride 2
+        pool2_out_drop = F.dropout(pool2_out, .5)       # Dropout 50% after every max-pooling layer
+        conv7_out = F.relu(self.conv7(pool2_out_drop))  # 3x3 conv. 192 ReLU
+        conv8_out = F.relu(self.conv8(conv7_out))       # 1x1 conv. 192 ReLU
+        class_out = F.relu(self.class_conv(conv8_out))  # 1x1 conv. 10 ReLU
+        pool_out = F.adaptive_avg_pool2d(class_out, 1)  # Global averaging
         pool_out.squeeze_(-1)
         pool_out.squeeze_(-1)
         return pool_out
@@ -429,35 +425,27 @@ class Model_C(nn.Module):
 class Strided_CNN_C(nn.Module):
     def __init__(self, input_size, n_classes=10, **kwargs):
         super(Strided_CNN_C, self).__init__()
-        self.conv1 = nn.Conv2d(input_size, 96, 3, padding=1)
+        self.conv1 = nn.Conv2d(input_size, 96, 3, padding=1)        
         self.conv2 = nn.Conv2d(96, 96, 3, padding=1, stride=2)
-        #self.conv3 = nn.Conv2d(96, 96, 3, padding=1, stride=2)
         self.conv3 = nn.Conv2d(96, 192, 3, padding=1)
         self.conv4 = nn.Conv2d(192, 192, 3, padding=1, stride=2)
-        #self.conv6 = nn.Conv2d(192, 192, 3, padding=1, stride=2)
         self.conv5 = nn.Conv2d(192, 192, 3, padding=1)
         self.conv6 = nn.Conv2d(192, 192, 1)
-
         self.class_conv = nn.Conv2d(192, n_classes, 1)
 
         print("Loaded Strided-CNN-C")
 
 
     def forward(self, x):
-        x_drop = F.dropout(x, .2)
-        conv1_out = F.relu(self.conv1(x_drop))
-        conv2_out = F.relu(self.conv2(conv1_out))
-        conv3_out = F.relu(self.conv3(conv2_out))
-        conv4_out = F.relu(self.conv4(conv3_out))
-
-        conv5_out = F.relu(self.conv5(conv4_out))
-        conv6_out = F.relu(self.conv6(conv5_out))
-        #conv6_out_drop = F.dropout(conv6_out, .5)
-        #conv7_out = F.relu(self.conv7(conv6_out_drop))
-        #conv8_out = F.relu(self.conv8(conv7_out))
-
-        class_out = F.relu(self.class_conv(conv6_out))
-        pool_out = F.adaptive_avg_pool2d(class_out, 1)
+        x_drop = F.dropout(x, .2)                       # Dropout is 20% for all inputs (see end of p. 5)
+        conv1_out = F.relu(self.conv1(x_drop))          # 3x3 conv. 96 ReLU
+        conv2_out = F.relu(self.conv2(conv1_out))       # 3x3 conv. 96 ReLU with stride 2
+        conv3_out = F.relu(self.conv3(conv2_out))       # 3x3 conv. 192 ReLU
+        conv4_out = F.relu(self.conv4(conv3_out))       # 3x3 conv. 192 ReLU with stride 2
+        conv5_out = F.relu(self.conv5(conv4_out))       # 3x3 conv. 192 ReLU
+        conv6_out = F.relu(self.conv6(conv5_out))       # 1x1 conv. 192 ReLU
+        class_out = F.relu(self.class_conv(conv6_out))  # 1x1 conv. 10 ReLU
+        pool_out = F.adaptive_avg_pool2d(class_out, 1)  # Global averaging
         pool_out.squeeze_(-1)
         pool_out.squeeze_(-1)
         return pool_out
@@ -469,36 +457,39 @@ class ConvPool_CNN_C(nn.Module):
         self.conv2 = nn.Conv2d(96, 96, 3, padding=1)
         self.conv3 = nn.Conv2d(96, 96, 3, padding=1)
         self.pool1 = nn.MaxPool2d(3, stride=2)
-        #self.conv3 = nn.Conv2d(96, 96, 3, padding=1, stride=2)
         self.conv4 = nn.Conv2d(96, 192, 3, padding=1)
         self.conv5 = nn.Conv2d(192, 192, 3, padding=1)
         self.conv6 = nn.Conv2d(192, 192, 3, padding=1)
         self.pool2 = nn.MaxPool2d(3, stride=2)
-        #self.conv6 = nn.Conv2d(192, 192, 3, padding=1, stride=2)
         self.conv7 = nn.Conv2d(192, 192, 3, padding=1)
         self.conv8 = nn.Conv2d(192, 192, 1)
-
         self.class_conv = nn.Conv2d(192, n_classes, 1)
 
         print("Loaded ConvPool-C")
 
 
     def forward(self, x):
-        x_drop = F.dropout(x, .2)
-        conv1_out = F.relu(self.conv1(x_drop))
-        conv2_out = F.relu(self.conv2(conv1_out))
-        conv3_out = F.relu(self.conv3(conv2_out))
-        conv3_out_drop = F.dropout(conv3_out, .5)
-        conv4_out = F.relu(self.conv4(conv3_out_drop))
-        conv5_out = F.relu(self.conv5(conv4_out))
-        conv6_out = F.relu(self.conv6(conv5_out))
-        conv6_out_drop = F.dropout(conv6_out, .5)
-        conv7_out = F.relu(self.conv7(conv6_out_drop))
-        conv8_out = F.relu(self.conv8(conv7_out))
+        x_drop = F.dropout(x, .2)                       # Dropout is 20% for all inputs (see end of p. 5)
+        conv1_out = F.relu(self.conv1(x_drop))          # 3x3 conv. 96 ReLU
+        conv2_out = F.relu(self.conv2(conv1_out))       # 3x3 conv. 96 ReLU
+        conv3_out = F.relu(self.conv3(conv2_out))       # 3x3 conv. 96 ReLU
+        
+        pool1_out = self.pool1(conv3_out)               # 3x3 max-pooling stride 2
+        pool1_out_drop = F.dropout(pool1_out, .5)       # Dropout 50% after every max pool layer
 
-        class_out = F.relu(self.class_conv(conv8_out))
-        pool_out = F.adaptive_avg_pool2d(class_out, 1)
-        pool_out.squeeze_(-1)
+        conv4_out = F.relu(self.conv4(pool1_out_drop))  # 3x3 conv. 192 ReLU
+        conv5_out = F.relu(self.conv5(conv4_out))       # 3x3 conv. 192 ReLU
+        conv6_out = F.relu(self.conv6(conv5_out))       # 3x3 conv. 192 ReLU
+
+        pool2_out = self.pool2(conv6_out)               # 3x3 max-pooling stride 2
+        pool2_out_drop = F.dropout(pool2_out, .5)       # Dropout 50% after every max pool layer
+
+        conv7_out = F.relu(self.conv7(pool2_out_drop))  # 3x3 conv. 192 ReLU
+        conv8_out = F.relu(self.conv8(conv7_out))       # 1x1 conv. 192 ReLU
+
+        class_out = F.relu(self.class_conv(conv8_out))  # 1x1 conv. 10 ReLU
+        pool_out = F.adaptive_avg_pool2d(class_out, 1)  # Global averaging 
+        pool_out.squeeze_(-1)                           
         pool_out.squeeze_(-1)
         return pool_out
 
@@ -520,20 +511,20 @@ class ALL_CNN_C(nn.Module):
 
 
     def forward(self, x):
-        x_drop = F.dropout(x, .2)
-        conv1_out = F.relu(self.conv1(x_drop))
-        conv2_out = F.relu(self.conv2(conv1_out))
-        conv3_out = F.relu(self.conv3(conv2_out))
-        conv3_out_drop = F.dropout(conv3_out, .5)
-        conv4_out = F.relu(self.conv4(conv3_out_drop))
-        conv5_out = F.relu(self.conv5(conv4_out))
-        conv6_out = F.relu(self.conv6(conv5_out))
-        conv6_out_drop = F.dropout(conv6_out, .5)
-        conv7_out = F.relu(self.conv7(conv6_out_drop))
-        conv8_out = F.relu(self.conv8(conv7_out))
+        x_drop = F.dropout(x, .2)                       # Dropout is 20% for all inputs (see end of p. 5)
+        conv1_out = F.relu(self.conv1(x_drop))          # 3x3 conv. 96 ReLU
+        conv2_out = F.relu(self.conv2(conv1_out))       # 3x3 conv. 96 ReLU
+        conv3_out = F.relu(self.conv3(conv2_out))       # 3x3 conv. 96 ReLU with stride 2
+        conv3_out_drop = F.dropout(conv3_out, .5)       # Dropout 50% after layer replacing max-pooling (see end of p. 5)
+        conv4_out = F.relu(self.conv4(conv3_out_drop))  # 3x3 conv. 192 ReLU
+        conv5_out = F.relu(self.conv5(conv4_out))       # 3x3 conv. 192 ReLU
+        conv6_out = F.relu(self.conv6(conv5_out))       # 3x3 conv. 192 ReLU with stride 2
+        conv6_out_drop = F.dropout(conv6_out, .5)       # Dropout 50% after layer replacing max-pooling (see end of p. 5)
+        conv7_out = F.relu(self.conv7(conv6_out_drop))  # 3x3 conv. 192 ReLU
+        conv8_out = F.relu(self.conv8(conv7_out))       # 1x1 conv. 192 ReLU
 
-        class_out = F.relu(self.class_conv(conv8_out))
-        pool_out = F.adaptive_avg_pool2d(class_out, 1)
+        class_out = F.relu(self.class_conv(conv8_out))  # 1x1 conv. 10 ReLU
+        pool_out = F.adaptive_avg_pool2d(class_out, 1)  # Global averaging
         pool_out.squeeze_(-1)
         pool_out.squeeze_(-1)
         return pool_out
