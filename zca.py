@@ -24,6 +24,24 @@ SOFTWARE.
 import numpy as np
 from sklearn.utils import as_float_array
 from sklearn.base import TransformerMixin, BaseEstimator
+from scipy import linalg
+import theano as th
+import theano.tensor as T
+import time
+from Models import *
+from zca import *
+import torchvision
+from torchvision import datasets, transforms
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from torch.autograd import Variable
+from torch import Tensor
+import matplotlib.pyplot as plt
+import numpy as np
+
+# https://github.com/devyhia/cifar-10/blob/master/ZCA%20%2B%20Logistic%20Regression.ipynb
 
 class ZCA(BaseEstimator, TransformerMixin):
 
@@ -33,94 +51,87 @@ class ZCA(BaseEstimator, TransformerMixin):
 
     def fit(self, X, y=None):
         X = as_float_array(X, copy=self.copy)
+        
         self.mean_ = np.mean(X, axis=0)
+        
         X = X - self.mean_
+
         sigma = np.dot(X.T, X) / (X.shape[0] - 1)
+        
         U, S, V = np.linalg.svd(sigma)
+
         tmp = np.dot(U, np.diag(1 / np.sqrt(S + self.regularization)))
+        
         self.components_ = np.dot(tmp, U.T)
+        
         return self
 
     def transform(self, X):
         X_transformed = X - self.mean_
         X_transformed = np.dot(X_transformed, self.components_.T)
         return X_transformed
-		
-# ZCA and MeanOnlyBNLayer implementations copied from
-#   https://github.com/TimSalimans/weight_norm/blob/master/nn.py
-#
-# Modifications made to MeanOnlyBNLayer:
-# - Added configurable momentum.
-# - Added 'modify_incoming' flag for weight matrix sharing (not used in this project).
-# - Sums and means use float32 datatype.		
-		
+	
+def show(img, rescale=False):
+    if rescale:
+        img = (img - torch.min(img)) / (torch.max(img) - torch.min(img))
+    npimg = img.numpy()
+    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+    plt.show()
 
-class ZCA2(object):
-    def __init__(self, regularization=1e-5, x=None):
-        self.regularization = regularization
-        if x is not None:
-            self.fit(x)
+def save(name, img, rescale=False):
+    if rescale:
+        img = (img - torch.min(img)) / (torch.max(img) - torch.min(img))
+    npimg = img.numpy()
+    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+    plt.savefig(name)
 
-    def fit(self, x):
-        s = x.shape
-        x = x.copy().reshape((s[0],np.prod(s[1:])))
-        m = np.mean(x, axis=0)
-        x -= m
-        sigma = np.dot(x.T,x) / x.shape[0]
-        U, S, V = linalg.svd(sigma)
-        tmp = np.dot(U, np.diag(1./np.sqrt(S+self.regularization)))
-        tmp2 = np.dot(U, np.diag(np.sqrt(S+self.regularization)))
-        self.ZCA_mat = th.shared(np.dot(tmp, U.T).astype(th.config.floatX))
-        self.inv_ZCA_mat = th.shared(np.dot(tmp2, U.T).astype(th.config.floatX))
-        self.mean = th.shared(m.astype(th.config.floatX))
 
-    def apply(self, x):
-        s = x.shape
-        if isinstance(x, np.ndarray):
-            return np.dot(x.reshape((s[0],np.prod(s[1:]))) - self.mean.get_value(), self.ZCA_mat.get_value()).reshape(s)
-        elif isinstance(x, T.TensorVariable):
-            return T.dot(x.flatten(2) - self.mean.dimshuffle('x',0), self.ZCA_mat).reshape(s)
-        else:
-            raise NotImplementedError("Whitening only implemented for numpy arrays or Theano TensorVariables")
-            
-    def invert(self, x):
-        s = x.shape
-        if isinstance(x, np.ndarray):
-            return (np.dot(x.reshape((s[0],np.prod(s[1:]))), self.inv_ZCA_mat.get_value()) + self.mean.get_value()).reshape(s)
-        elif isinstance(x, T.TensorVariable):
-            return (T.dot(x.flatten(2), self.inv_ZCA_mat) + self.mean.dimshuffle('x',0)).reshape(s)
-        else:
-            raise NotImplementedError("Whitening only implemented for numpy arrays or Theano TensorVariables")		
-		
-		
-class ZCATransformation(object):
-    def __init__(self, transformation_matrix, transformation_mean):
-        if transformation_matrix.size(0) != transformation_matrix.size(1):
-            raise ValueError("transformation_matrix should be square. Got " +
-                             "[{} x {}] rectangular matrix.".format(*transformation_matrix.size()))
-        self.transformation_matrix = transformation_matrix
-        self.transformation_mean = transformation_mean
+if __name__ == "__main__":
+    train_batch_size = 32
+    test_batch_size = 124
+    best_loss = float("inf")
+    best_epoch = -1
+    dataset_path = './cifar10'
+    cuda = False 
 
-    def __call__(self, tensor):
-        """
-        Args:
-            tensor (Tensor): Tensor image of size (N, C, H, W) to be whitened.
-        Returns:
-            Tensor: Transformed image.
-        """
-        if tensor.size(1) * tensor.size(2) * tensor.size(3) != self.transformation_matrix.size(0):
-            raise ValueError("tensor and transformation matrix have incompatible shape." +
-                             "[{} x {} x {}] != ".format(*tensor[0].size()) +
-                             "{}".format(self.transformation_matrix.size(0)))
-        batch = tensor.size(0)
+    kwargs = {'num_workers': 1, 'pin_memory': True} if cuda else {}
 
-        flat_tensor = tensor.view(batch, -1)
-        transformed_tensor = torch.mm(flat_tensor - self.transformation_mean, self.transformation_matrix)
 
-        tensor = transformed_tensor.view(tensor.size())
-        return tensor
+    trainset = datasets.CIFAR10(root=dataset_path, train=True, download=True)
+    #testset = datasets.CIFAR10(root=dataset_path, train=False, download=True)
 
-    def __repr__(self):
-        format_string = self.__class__.__name__ + '('
-        format_string += (str(self.transformation_matrix.numpy().tolist()) + ')')
-        return format_string
+    # Display original images
+    display_transform = transforms.Compose([
+    transforms.ToTensor()
+    ])
+    loader = torch.utils.data.DataLoader(datasets.CIFAR10(root=dataset_path, train=True, download=True, transform=display_transform), batch_size=train_batch_size, shuffle=True, **kwargs)
+    dataiter = iter(loader)
+    images, labels = dataiter.next()
+    save("original.png", torchvision.utils.make_grid(images))
+
+
+    train_mean = trainset.data.mean(axis=(0, 1, 2)) / 255     # [0.49139968  0.48215841  0.44653091]
+    train_std = trainset.data.std(axis=(0, 1, 2)) / 255       # [0.24703223  0.24348513  0.26158784]
+
+    transform_train = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize(train_mean, train_std),
+    ])
+
+    transform_test = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize(train_mean, train_std),
+    ])
+
+    train_loader = torch.utils.data.DataLoader(datasets.CIFAR10(root=dataset_path, train=True, download=True, transform=transform_train), batch_size=train_batch_size, shuffle=True, **kwargs)
+    test_loader = torch.utils.data.DataLoader(datasets.CIFAR10(root=dataset_path, train=False, download=True, transform=transform_test), batch_size=test_batch_size, shuffle=False, **kwargs)
+    start = time.time()
+    trainx=images.numpy().reshape(train_batch_size, 3*32*32)
+    whitener = ZCA()
+    print(trainx.shape)
+    whitener.fit(trainx)
+    whitened = whitener.transform(images.reshape(train_batch_size, 3*32*32))
+    print(whitened.shape)
+    image_tensor = torch.tensor(whitened.reshape(32, 3, 32, 32))
+    save("zca.png", torchvision.utils.make_grid(image_tensor), rescale=True)
+    print("Duration: ", str(time.time() - start))
