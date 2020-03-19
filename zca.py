@@ -22,10 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 try:
-  import cupy as cp
+    import cupy as cp
 except ModuleNotFoundError:
-  !pip install cupy
-  import cupy as cp
+    !pip install cupy
+    import cupy as cp
 
 import cupy as cp
 import numpy as np
