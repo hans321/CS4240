@@ -24,7 +24,7 @@ SOFTWARE.
 try:
     import cupy as cp
 except ModuleNotFoundError:
-    !pip install cupy
+    #!pip install cupy
     import cupy as cp
 
 import cupy as cp
@@ -68,11 +68,11 @@ class ZCA(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        print("Transforming ... ", end="")
+        #print("Transforming ... ", end="")
         X_transformed = X - self.mean_
         X_transformed = cp.dot(cp.array(X_transformed), self.components_.T)
 
-        print("done")
+        #print("done")
         return X_transformed
 	
 def show(img, rescale=False):
