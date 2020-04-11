@@ -71,4 +71,4 @@ For us it is unclear if the strided model uses dropout after the convolution lay
 Our recommendation to authors is to publish their original code which was used to obtain the results to make sure that all hyperparameters (also those implicitly assumed) are known.
 
 
-[1]: https://arxiv.org/abs/1412.6806
+[^1]: https://arxiv.org/abs/1412.6806
