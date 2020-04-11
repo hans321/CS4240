@@ -27,10 +27,12 @@ Replication results for all models is shown in the table below.
 | ConvPool-CNN-C      | x    | x     | x     | x     |
 | ALL-CNN-C           | x    | x     | x     | x     |
 
-![](./images/model_all_cnn_c_wd_0_003.svg)
-
 The table entries indicate the model error (100 - accuracy).
 Entries with an "x" indicate that no useful result could be obtained. We determined that the model was not useful if it was stuck at 90% error for atleast the first 10 epochs while training. This is because from several experimental observations it was observed that a model would never recover after getting stuck at 90% error irrespective of the learning rate.
+
+The following figure illustrates how the train and test error change as function of the amount of epochs. 
+
+![](./images/model_all_cnn_c_wd_0_003.svg)
 
 ## Extension
 
