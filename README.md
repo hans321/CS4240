@@ -32,7 +32,7 @@ Entries with an "x" indicate that no useful result could be obtained. We determi
 
 The following figure illustrates how the train and test error change as function of the amount of epochs. 
 
-![](./images/model_all_cnn_c_wd_0_003.svg)
+![](./images/model_c_0_01.svg)
 
 ## Extension
 
