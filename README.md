@@ -6,7 +6,19 @@ https://github.com/hans321/CS4240
 .... [^1]
 
 ## Replication
+The goal of the replication is to replicate the accuracy of the 12 models listed in Table 3 of the paper.
 
+
+### Fixing the available code
+Investigating the available code lead to the conclusion that there were some differences between the implemented model in the code and the paper's description of the model:
+
+#### Hyperparameters
+First we found that the learning rate was set to 0.0001 in the code. The paper states the following set of learning rates was used: 0.25, 0.1, 0.05, 0.01. Unfortunately, the paper doesn't mention which learning rates resulted in the best results for each model but 0.001 as listed in the code definetely isn't one of them. Secondly, the code didn't include any weight-decay while the paper clearly states a weight-decay constant of 0.001 was used. 
+
+#### CIFAR-10 post-processing
+The paper description of the post-processing is very clear, they used normalization and image whitening. However, the code only applies normalization with the addition of horizontally flipping and padding. For image whitening the paper refers to a different paper which states the whitening technique used is Zero Component Analysis (ZCA). ZCA essentially makes edges more prominant by filtering out low-order correlations between pixels. ZCA does introduce an additional hyperparameter $\epsilon$ which we fixed to 0.01 in our models. The images below show the effect of ZCA:
+![Pre-ZCA](images/original.png)*Original CIFAR-10 images*
+![Post-ZCA](images/zca.png)*CIFAR-10 images processed with ZCA*
 
 ### Results
 
@@ -35,6 +47,8 @@ The following figure illustrates how the train and test error change as function
 ![](./images/model_all_cnn_c_wd_0_003.svg)
 
 ## Extension
+
+For our extension of the replication we focuessed on two aspects: weight initialization and hyperparameter tunning
 
 ### Results
 

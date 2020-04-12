@@ -144,5 +144,5 @@ if __name__ == "__main__":
 
     images = images[0:2]
     images_zca = trainset_zca[0:2].reshape(2, 3, 32, 32)
-    show(torchvision.utils.make_grid(torch.tensor(images)), rescale=True)
-    show(torchvision.utils.make_grid(torch.tensor(images_zca)), rescale=True)    
+    save("original.png", torchvision.utils.make_grid(torch.tensor(images)), rescale=True)
+    save("zca.png", torchvision.utils.make_grid(torch.tensor(images_zca)), rescale=True)    
