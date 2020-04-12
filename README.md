@@ -62,11 +62,12 @@ From the replication results it is clear that the test error is around 10% large
 
 | Model C ALL CNN | 0.005 | 0.003 | 0.002 | 0.0015 |
 |-----------------|-------|-------|-------|--------|
-| learning rate = 0.01 | 46.40 | 16.62 | 14.32 | 13.03 |
+| learning rate = 0.01 | 24.79 | 16.62 | 14.32 | 13.03 |
 
 Increasing the weight-decay did indeed decrease the gap between train and test and often closed it completely. There was however a large negative effect on the train error which caused the final result to still be worse.
+The figure below uses a weight-decay of 0.005, eventually resulting in a gap of around 3% points in error between test and error but the test error is significantly larger (11% points) compared to using a weight-decay of 0.001. 
 
-![](./images/model_all_cnn_c_wd_0_003.svg)
+![](./images/model_all_cnn_c_wd_0_005.svg)
 
 Also note that:
 Increasing the weight-decay beyond 0.005 appeared to always result in useless models (stuck at 90% error). 
