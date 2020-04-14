@@ -50,7 +50,7 @@ For this project the code from [[2]] was our starting point. This code contains 
 First we found that the learning rate was set to 0.0001 in the code. The paper states the following set of learning rates was used: 0.25, 0.1, 0.05, 0.01. Unfortunately, the paper doesn't mention which learning rates resulted in the best results for each model but 0.001 as listed in the code definetely isn't one of them. Secondly, the code didn't include any weight-decay while the paper clearly states a weight-decay constant of 0.001 was used. 
 
 #### CIFAR-10 post-processing
-The paper description of the post-processing is very clear, they used normalization and image whitening. However, the code only applies normalization with the addition of horizontally flipping and padding. For image whitening the paper refers to a different paper which states the whitening technique used is Zero Component Analysis (ZCA). ZCA essentially makes edges more prominant by filtering out low-order correlations between pixels. ZCA does introduce an additional hyperparameter $\epsilon$ which we fixed to 0.01 in our models. The images below show the effect of ZCA:
+The paper description of the post-processing is very clear, they used normalization and image whitening. However, the code only applies normalization with the addition of horizontally flipping and padding. For image whitening the paper refers to a different paper [[3]] which states the whitening technique used is Zero Component Analysis (ZCA). ZCA essentially makes edges more prominant by filtering out low-order correlations between pixels. ZCA does introduce an additional hyperparameter $\epsilon$ which we fixed to 0.01 in our models. The images below show the effect of ZCA:
 ![Pre-ZCA](images/original.png)*Original CIFAR-10 images*
 ![Post-ZCA](images/zca.png)*CIFAR-10 images processed with ZCA*
 
@@ -101,7 +101,7 @@ Some discrepancy between the results of the extended version and the results fro
 
 For both hyper parameters model ALL-CNN-C was investigated because model C is more explicitly elaborated in the paper[[1]] and the ALL-CNN-C was shown to have the best performance of all other models. 
 
-### weight-decay
+### Weight-decay
 From the replication results it is clear that the test error is around 10% larger than the train error. Our Hypothesis is that adding regularization will decrease this gap and thus improve the test error. To increase the regularization we attempted to increased the weight-decay.
 
 | Model C ALL CNN | 0.005 | 0.003 | 0.002 | 0.0015 |
@@ -119,7 +119,14 @@ Increasing the learning rate to 0.05 (the next step in the range from the paper[
 
 Therefore it is assumed the current weight-decay of 0.001 should not be changed.
 
-### batch size
+### Batch size
+The batch-size hyper-parameter indicates how many training samples are used to update the weights. The paper does not specify the batch-size that was used in their results but the given given code used a 32 training samples per iteration. Since the code divded the CIFAR-10 data-set in 50.000 training samples and 10.000 test samples each epoch updates the weights approximately 1500 times. 
+
+To investigate the behaviour of the batch-size on the All-CNN-C model we increased to batch-size from 32 to 256. In theory this should result in higher accuracies with higher learning rates since each batch contains more information that can be learned. In the figure below we can see the train and test errors for two different learning rates when a batch-size of 256 is used. We can now see that unlike before, when we only had a succesfull run with a learning rate of 0.01 we can succesfully run the model with a learning rate of 0.05. More importantly we can see that the performance of the model with 0.05 learning rate actually scores better thus mathing our expectations.
+
+~![](./images/batch_size_256.png)
+
+
 
 ## Conclusion
 There is still a significant discrepancy between the replicated results and those shown in the paper[[1]]. Several parameters are not mentioned in the paper like batch size and weight initialization. It is not sure if we had known these parameters we would obtain better results than the default ones we used now.
@@ -136,5 +143,8 @@ Our recommendation to authors is to publish their original code which was used t
 
 [[2]] https://github.com/StefOe/all-conv-pytorch
 
+[[3]] [Maxout networks](https://arxiv.org/pdf/1302.4389.pdf)
+ 
 [1]: https://arxiv.org/abs/1412.6806
 [2]: https://github.com/StefOe/all-conv-pytorch
+[3]: https://arxiv.org/pdf/1302.4389.pdf
