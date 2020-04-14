@@ -1,6 +1,13 @@
 # CS4240
-TU Delft Deep learning (CS4240)
+This project was part of the TU Delft Deep Learning course (CS4240). 
+The goal of this project was to replicate or reproduce a result from a deep learning paper.
 https://github.com/hans321/CS4240
+
+Contributors to this project:
+
+* Hans den Boer
+* Jan van Tuijn
+* Sybold Hijlkema
 
 ## Paper
 The [paper][[1]] "Striving For Simplicity: The All Convolutional Net" (2014) is one of the top performing convolutional neural networks for object recognition on the CIFAR-10 dataset.
@@ -36,6 +43,7 @@ The goal of the replication is to replicate the accuracy of the 12 models listed
 
 
 ### Fixing the available code
+For this project the code from [[2]] was our starting point.
 Investigating the available code lead to the conclusion that there were some differences between the implemented model in the code and the paper's description of the model:
 
 #### Hyperparameters
@@ -115,6 +123,8 @@ Our recommendation to authors is to publish their original code which was used t
 
 ## References
 [[1]] [STRIVING FOR SIMPLICITY: THE ALL CONVOLUTIONAL NET](https://arxiv.org/abs/1412.6806)
-[2] https://github.com/StefOe/all-conv-pytorch
+
+[[2]] https://github.com/StefOe/all-conv-pytorch
 
 [1]: https://arxiv.org/abs/1412.6806
+[2]: https://github.com/StefOe/all-conv-pytorch
