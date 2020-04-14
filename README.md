@@ -9,9 +9,9 @@ followed by a small number of fully connected layers.[1] In this paper it is eva
 
 We attempt to reproduce the results that are stated in the first experement (Table 3 from paper). For this experiment 12 models are trained. These models are derived from 3 base models, called Model A, Model B and Model C. For each base model, three additional models are derived: 
 
-..* (Strided-CNN-A/B/C) model in which max-pooling is removed and the stride of the convolutional layer preceding the max-pool layer is increased by 1.
-..* (All-CNN-A/B/C) model with max-pooling layer replaced by a convolutional layer.
-..* (ConvPool-CNN-A/B/C) model where an additional dense convolutional layer is placed before max-pooling layer.
+* (Strided-CNN-A/B/C) model in which max-pooling is removed and the stride of the convolutional layer preceding the max-pool layer is increased by 1.
+* (All-CNN-A/B/C) model with max-pooling layer replaced by a convolutional layer.
+* (ConvPool-CNN-A/B/C) model where an additional dense convolutional layer is placed before max-pooling layer.
 
 
 | Model               | Error (%) | # parameters   | 
