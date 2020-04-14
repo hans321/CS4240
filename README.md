@@ -3,9 +3,9 @@ TU Delft Deep learning (CS4240)
 https://github.com/hans321/CS4240
 
 ## Paper
-The [paper][1] "Striving For Simplicity: The All Convolutional Net" (2014) is one of the top performing convolutional neural networks for object recognition on the CIFAR-10 dataset.
+The [paper][[1]] "Striving For Simplicity: The All Convolutional Net" (2014) is one of the top performing convolutional neural networks for object recognition on the CIFAR-10 dataset.
 Most CNNs for object recognition are built using the same principles: Alternating convolution and max-pooling layers
-followed by a small number of fully connected layers.[1] In this paper it is evaluated whether max-pooling can simply replaced by a convolutional layer with increased stride. 
+followed by a small number of fully connected layers.[[1]] In this paper it is evaluated whether max-pooling can simply replaced by a convolutional layer with increased stride. 
 
 We attempt to reproduce the results that are stated in the first experement (Table 3 from paper). For this experiment 12 models are trained. These models are derived from 3 base models, called Model A, Model B and Model C. For each base model, three additional models are derived: 
 
@@ -28,6 +28,7 @@ We attempt to reproduce the results that are stated in the first experement (Tab
 | Strided-CNN-C       | 10.19%    | ≈ 1.3 M        |
 | ConvPool-CNN-C      | 9.31%     | ≈ 1.4 M        |
 | ALL-CNN-C           | 9.08%     | ≈ 1.4 M        |
+
 *Table 3 from paper*
 
 ## Replication
@@ -78,9 +79,9 @@ For our extension of the replication we focuessed on two aspects: weight initial
 ### Results
 
 ## Hyper parameter tuning
-Some discrepancy between the results of the extended version and the results from the paper[1] can still be observed. In an attempt to somehow reduce this gap we investigated the influence of two hyper parameters parameters: weight-decay and batch size.
+Some discrepancy between the results of the extended version and the results from the paper[[1]] can still be observed. In an attempt to somehow reduce this gap we investigated the influence of two hyper parameters parameters: weight-decay and batch size.
 
-For both hyper parameters model ALL-CNN-C was investigated because model C is more explicitly elaborated in the paper[1] and the ALL-CNN-C was shown to have the best performance of all other models. 
+For both hyper parameters model ALL-CNN-C was investigated because model C is more explicitly elaborated in the paper[[1]] and the ALL-CNN-C was shown to have the best performance of all other models. 
 
 ### weight-decay
 From the replication results it is clear that the test error is around 10% larger than the train error. Our Hypothesis is that adding regularization will decrease this gap and thus improve the test error. To increase the regularization we attempted to increased the weight-decay.
@@ -96,21 +97,24 @@ The figure below uses a weight-decay of 0.005, eventually resulting in a gap of 
 
 Also note that:
 Increasing the weight-decay beyond 0.005 appeared to always result in useless models (stuck at 90% error). 
-Increasing the learning rate to 0.05 (the next step in the range from the paper[1]) also resulted in useless models after increasing the weight decay.
+Increasing the learning rate to 0.05 (the next step in the range from the paper[[1]]) also resulted in useless models after increasing the weight decay.
 
 Therefore it is assumed the current weight-decay of 0.001 should not be changed.
 
 ### batch size
 
 ## Conclusion
-There is still a significant discrepancy between the replicated results and those shown in the paper[1]. Several parameters are not mentioned in the paper like batch size and weight initialization. It is not sure if we had known these parameters we would obtain better results than the default ones we used now.
+There is still a significant discrepancy between the replicated results and those shown in the paper[[1]]. Several parameters are not mentioned in the paper like batch size and weight initialization. It is not sure if we had known these parameters we would obtain better results than the default ones we used now.
 
-We noticed that in the paper[1] it is mentioned (in table 1) that a global averaging over 6 x 6 spatial dimensions is performed just before the softmax. After analyzing the models we think this should be a global averaging over 8 x 8 spatial dimensions because otherwise there is a mismatch in dimensional sizes. In the given code we also observed that the averaged array has a size of 8 x 8. This is probably an error in the paper[1].
+We noticed that in the paper[[1]] it is mentioned (in table 1) that a global averaging over 6 x 6 spatial dimensions is performed just before the softmax. After analyzing the models we think this should be a global averaging over 8 x 8 spatial dimensions because otherwise there is a mismatch in dimensional sizes. In the given code we also observed that the averaged array has a size of 8 x 8. This is probably an error in the paper[[1]].
 
 Some remaining unclearity originates from the strided model.
-For us it is unclear if the strided model uses dropout after the convolution layer wich has an increased stride. In the paper[1] it is mentioned that "We applied dropout to the input image as well as after each pooling layer (or after the layer replacing the pooling layer respectively)."[1] but this does not specify what happens to the dropout if the pooling layer is ommited entirely.
+For us it is unclear if the strided model uses dropout after the convolution layer wich has an increased stride. In the paper[[1]] it is mentioned that "We applied dropout to the input image as well as after each pooling layer (or after the layer replacing the pooling layer respectively)."[[1]] but this does not specify what happens to the dropout if the pooling layer is ommited entirely.
 
 Our recommendation to authors is to publish their original code which was used to obtain the results to make sure that all hyperparameters (also those implicitly assumed) are known.
 
+## References
+[[1]] [STRIVING FOR SIMPLICITY: THE ALL CONVOLUTIONAL NET](https://arxiv.org/abs/1412.6806)
+[2] https://github.com/StefOe/all-conv-pytorch
 
 [1]: https://arxiv.org/abs/1412.6806
