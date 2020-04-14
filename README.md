@@ -28,7 +28,7 @@ We attempt to reproduce the results that are stated in the first experement (Tab
 | Strided-CNN-C       | 10.19%    | ≈ 1.3 M        |
 | ConvPool-CNN-C      | 9.31%     | ≈ 1.4 M        |
 | ALL-CNN-C           | 9.08%     | ≈ 1.4 M        |
-[Table 3 from paper]
+*Table 3 from paper*
 
 ## Replication
 The goal of the replication is to replicate the accuracy of the 12 models listed in Table 3 of the paper.
