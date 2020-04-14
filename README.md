@@ -43,8 +43,7 @@ The goal of the replication is to replicate the accuracy of the 12 models listed
 
 
 ### Fixing the available code
-For this project the code from [[2]] was our starting point.
-Investigating the available code lead to the conclusion that there were some differences between the implemented model in the code and the paper's description of the model:
+For this project the code from [[2]] was our starting point. This code contains a number of discrepancies with the paper. Namely, related to hyperparameters and post-processing.
 
 #### Hyperparameters
 First we found that the learning rate was set to 0.0001 in the code. The paper states the following set of learning rates was used: 0.25, 0.1, 0.05, 0.01. Unfortunately, the paper doesn't mention which learning rates resulted in the best results for each model but 0.001 as listed in the code definetely isn't one of them. Secondly, the code didn't include any weight-decay while the paper clearly states a weight-decay constant of 0.001 was used. 
