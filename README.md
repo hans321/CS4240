@@ -1,6 +1,7 @@
 # CS4240
 This project was part of the TU Delft Deep Learning course (CS4240). 
 The goal of this project was to replicate or reproduce a result from a deep learning paper.
+In this project the pytorch framework is used.
 https://github.com/hans321/CS4240
 
 Contributors to this project:
@@ -81,9 +82,19 @@ The following figure illustrates how the train and test error change as function
 
 ## Extension
 
-For our extension of the replication we focuessed on two aspects: weight initialization and hyperparameter tunning
+For our extension of the replication we focussed on two aspects: weight initialization and hyperparameter tunning
+
+### Weight initialization
+Since most of the replication results are stuck at 90% error,a different weight initialization algorithm is investigated. 
+In the paper[[1]] weight initialization is not mentioned. The starting code [[2]] uses the default pytorch weight initialzation for convolutional layers, which is Kaiming He. However, in pytorch this default Kaiming He specifies leaky ReLU instead of ReLU as activation function. While in the paper the use of ReLU activation is mentioned. Another interesting aspect to mention is that the paper publishing Kaiming He weight initialization is from 2015, and [[1]] is also from 2015. This makes it unlikely that [[1]] used Kaiming He weight initialization. The default weight initialization for the caffe framework, used in [[1]], is to fill all the weights with zero. This also results in 90% error for the All-CNN-C model in combination with all the learning rates. Finally, we tried Xavier weight initialization for the All-CNN-C model. Unfortunately, all learning rates restulted in 90% error, except for a learning rate of 0.01, which resulted in an error of 12.74%. This is still 3.66% higher than the results published in the paper.
 
 ### Results
+
+| Model C ALL CNN    | 0.25  | 0.1   | 0.05  | 0.01  |
+|--------------------|-------|-------|-------|-------|
+| Xavier weight init | x     | x     | x     | 12.74% |
+
+*Error(%) with Xavier weight initialization for ALL-CNN-C model*
 
 ## Hyper parameter tuning
 Some discrepancy between the results of the extended version and the results from the paper[[1]] can still be observed. In an attempt to somehow reduce this gap we investigated the influence of two hyper parameters parameters: weight-decay and batch size.
