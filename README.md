@@ -16,7 +16,7 @@ Contributors to this project:
 ## Paper
 The [paper][[1]] "Striving For Simplicity: The All Convolutional Net" (2014) is one of the top performing convolutional neural networks for object recognition on the CIFAR-10 dataset.
 Most CNNs for object recognition are built using the same principles: Alternating convolution and max-pooling layers
-followed by a small number of fully connected layers.[[1]] In this paper it is evaluated whether max-pooling can simply replaced by a convolutional layer with increased stride. 
+followed by a small number of fully connected layers.[[1]] In this paper it is evaluated whether max-pooling can simply be replaced by a convolutional layer with an increased stride. 
 
 We attempt to reproduce the results that are stated in the first experiment (Table 3 from paper). For this experiment 12 models are trained. These models are derived from 3 base models, called Model A, Model B and Model C. For each base model, three additional models are derived: 
 
