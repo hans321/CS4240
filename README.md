@@ -123,11 +123,15 @@ Increasing the learning rate to 0.05 (the next step in the range from the paper[
 Therefore it is assumed the current weight-decay of 0.001 should not be changed.
 
 ### Batch size
-The batch-size hyper-parameter indicates how many training samples are used to update the weights. The paper does not specify the batch-size that was used in their results but the given given code used a 32 training samples per iteration. Since the code divded the CIFAR-10 data-set in 50.000 training samples and 10.000 test samples each epoch updates the weights approximately 1500 times. 
+The batch-size hyper-parameter indicates how many training samples are used to update the weights. The paper does not specify the batch-size that was used in their results but the given given code used 32 training samples per iteration. Since the code divded the CIFAR-10 data-set in 50.000 training samples and 10.000 test samples each epoch updates the weights approximately 1500 times. 
 
-To investigate the behaviour of the batch-size on the All-CNN-C model we increased to batch-size from 32 to 256. In theory this should result in higher accuracies with higher learning rates since each batch contains more information that can be learned. In the figure below we can see the train and test errors for two different learning rates when a batch-size of 256 is used. We can now see that unlike before, when we only had a succesfull run with a learning rate of 0.01 we can succesfully run the model with a learning rate of 0.05. More importantly we can see that the performance of the model with 0.05 learning rate actually scores better thus mathing our expectations.
+To investigate the behaviour of the batch-size on the All-CNN-C model we tested two different batch sizes: 128 and 256.  In theory this should result in higher accuracies with higher learning rates since each batch contains a better estimation of the gradient. In the table below we can see the test errors for two different learning rates when a batch-size of 128 and 256 are used. We can now see that unlike before, when we only had a succesfull run with a learning rate of 0.01 we can succesfully run the model with a learning rate of 0.05. More importantly we can see that the performance of the model with a 0.05 learning rate actually scores better thus mathing our expectations.
+For the batch-size of 128 we can see that the model performs slightly better compared to the best results of the weight initialization change which had an error of 12.74%. A learning rate of 0.05 now also succeeds in completing without getting stuck at 10% but the the results are not better.
 
-![](./images/batch_size_256.png)
+| Model C ALL CNN | 128 | 256 |
+|-----------------|-------|-------|
+| learning rate = 0.01 | 12.6| 17.2 |
+| learning rate = 0.05 | 16.4 | 13.2 |
 
 
 
