@@ -15,7 +15,7 @@ The [paper][[1]] "Striving For Simplicity: The All Convolutional Net" (2014) is 
 Most CNNs for object recognition are built using the same principles: Alternating convolution and max-pooling layers
 followed by a small number of fully connected layers.[[1]] In this paper it is evaluated whether max-pooling can simply replaced by a convolutional layer with increased stride. 
 
-We attempt to reproduce the results that are stated in the first experement (Table 3 from paper). For this experiment 12 models are trained. These models are derived from 3 base models, called Model A, Model B and Model C. For each base model, three additional models are derived: 
+We attempt to reproduce the results that are stated in the first experiment (Table 3 from paper). For this experiment 12 models are trained. These models are derived from 3 base models, called Model A, Model B and Model C. For each base model, three additional models are derived: 
 
 * (Strided-CNN-A/B/C) model in which max-pooling is removed and the stride of the convolutional layer preceding the max-pool layer is increased by 1.
 * (All-CNN-A/B/C) model with max-pooling layer replaced by a convolutional layer.
@@ -44,7 +44,7 @@ The goal of the replication is to replicate the accuracy of the 12 models listed
 
 
 ### Fixing the available code
-For this project the code from [[2]] was our starting point. This code contains a number of discrepancies with the paper. Namely, related to hyperparameters and post-processing.
+For this project the code from [[2]] was our starting point. This code contains a number of discrepancies with the paper. For the most part related to hyperparameters and post-processing.
 
 #### Hyperparameters
 First we found that the learning rate was set to 0.0001 in the code. The paper states the following set of learning rates was used: 0.25, 0.1, 0.05, 0.01. Unfortunately, the paper doesn't mention which learning rates resulted in the best results for each model but 0.001 as listed in the code definetely isn't one of them. Secondly, the code didn't include any weight-decay while the paper clearly states a weight-decay constant of 0.001 was used. 
@@ -85,7 +85,7 @@ The following figure illustrates how the train and test error change as function
 For our extension of the replication we focussed on two aspects: weight initialization and hyperparameter tunning
 
 ### Weight initialization
-Since most of the replication results are stuck at 90% error,a different weight initialization algorithm is investigated. 
+Since most of the replication results are stuck at 90% error, a different weight initialization algorithm is investigated. 
 In the paper[[1]] weight initialization is not mentioned. The starting code [[2]] uses the default pytorch weight initialzation for convolutional layers, which is Kaiming He. However, in pytorch this default Kaiming He specifies leaky ReLU instead of ReLU as activation function. While in the paper the use of ReLU activation is mentioned. Another interesting aspect to mention is that the paper publishing Kaiming He weight initialization is from 2015, and [[1]] is also from 2015. This makes it unlikely that [[1]] used Kaiming He weight initialization. The default weight initialization for the caffe framework, used in [[1]], is to fill all the weights with zero. This also results in 90% error for the All-CNN-C model in combination with all the learning rates. Finally, we tried Xavier weight initialization for the All-CNN-C model. Unfortunately, all learning rates restulted in 90% error, except for a learning rate of 0.01, which resulted in an error of 12.74%. This is still 3.66% higher than the results published in the paper.
 
 ### Results
@@ -124,7 +124,7 @@ The batch-size hyper-parameter indicates how many training samples are used to u
 
 To investigate the behaviour of the batch-size on the All-CNN-C model we increased to batch-size from 32 to 256. In theory this should result in higher accuracies with higher learning rates since each batch contains more information that can be learned. In the figure below we can see the train and test errors for two different learning rates when a batch-size of 256 is used. We can now see that unlike before, when we only had a succesfull run with a learning rate of 0.01 we can succesfully run the model with a learning rate of 0.05. More importantly we can see that the performance of the model with 0.05 learning rate actually scores better thus mathing our expectations.
 
-~![](./images/batch_size_256.png)
+![](./images/batch_size_256.png)
 
 
 
@@ -134,9 +134,9 @@ There is still a significant discrepancy between the replicated results and thos
 We noticed that in the paper[[1]] it is mentioned (in table 1) that a global averaging over 6 x 6 spatial dimensions is performed just before the softmax. After analyzing the models we think this should be a global averaging over 8 x 8 spatial dimensions because otherwise there is a mismatch in dimensional sizes. In the given code we also observed that the averaged array has a size of 8 x 8. This is probably an error in the paper[[1]].
 
 Some remaining unclearity originates from the strided model.
-For us it is unclear if the strided model uses dropout after the convolution layer wich has an increased stride. In the paper[[1]] it is mentioned that "We applied dropout to the input image as well as after each pooling layer (or after the layer replacing the pooling layer respectively)."[[1]] but this does not specify what happens to the dropout if the pooling layer is ommited entirely.
+For us it is unclear if the strided model uses dropout after the convolution layer which has an increased stride. In the paper[[1]] it is mentioned that "We applied dropout to the input image as well as after each pooling layer (or after the layer replacing the pooling layer respectively)."[[1]] but this does not specify what happens to the dropout if the pooling layer is ommited entirely.
 
-Our recommendation to authors is to publish their original code which was used to obtain the results to make sure that all hyperparameters (also those implicitly assumed) are known.
+Our recommendation to authors in general is to publish their original code which was used to obtain the results to make sure that all hyperparameters (also those implicitly assumed) are known.
 
 ## References
 [[1]] [STRIVING FOR SIMPLICITY: THE ALL CONVOLUTIONAL NET](https://arxiv.org/abs/1412.6806)
