@@ -2,7 +2,10 @@
 This project was part of the TU Delft Deep Learning course (CS4240). 
 The goal of this project was to replicate or reproduce a result from a deep learning paper.
 In this project the pytorch framework is used.
-https://github.com/hans321/CS4240
+
+This project: https://github.com/hans321/CS4240
+
+Is one of the group of reproduced papers from: https://reproducedpapers.org/
 
 Contributors to this project:
 
